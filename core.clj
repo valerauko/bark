@@ -27,7 +27,8 @@
               (json/write-value-as-string
                 (merge static-fields
                        {:status (if exception "failure" "success")
-                        :attempt (or attempt 1)}
+                        :attempt (or attempt 1)
+                        :time time}
                        (if (and exception retry-in)
                          {:next-at (Date. ^long (+ (System/currentTimeMillis)
                                                    retry-in))}))))))
@@ -45,9 +46,11 @@
   (md/loop [attempt 1]
     (let [start (System/nanoTime)]
       (md/catch
-        (md/let-flow [result (f)]
-          (logger-fn {:time (millisec-diff start)})
-          result)
+        (md/chain
+          (f)
+          #(do
+             (logger-fn {:time (millisec-diff start)})
+             %))
         (fn [error]
           (let [next-attempt (inc attempt)
                 retrying? (<= next-attempt max-tries)
