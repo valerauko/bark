@@ -1,14 +1,7 @@
 (ns bark.fetch
-  (:require [clojure.tools.logging :as log]
-            [manifold.deferred :as md]
+  (:require [manifold.deferred :as md]
             [aleph.http :as http]
-            [jsonista.core :as json]))
-
-(defn parse-json
-  [input]
-  (json/read-value
-    input
-    (json/object-mapper {:decode-key-fn keyword})))
+            [bark.json :refer [parse-json]]))
 
 (defn fetch-resource
   [uri]
