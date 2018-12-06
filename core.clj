@@ -1,8 +1,8 @@
 (ns bark.core
-  (:require [manifold.deferred :as md]
-            [manifold.time :as mt]
+  (:require [clojure.tools.logging :as log]
             [clojure.math.numeric-tower :as math]
-            [clojure.tools.logging :as log]
+            [manifold.deferred :as md]
+            [manifold.time :as mt]
             [jsonista.core :as json])
   (:import [java.util Date]))
 
@@ -73,12 +73,5 @@
                 (throw error)))))))))
 
 (defn single-attempt
-  [f {:keys [logger-fn]}]
-  (let [start (System/nanoTime)]
-    (md/catch
-      (let [result (f)]
-        (logger-fn {:time (millisec-diff start)})
-        result)
-      (fn [error]
-        (logger-fn {:exception error
-                    :time (millisec-diff start)})))))
+  [f {:as options}]
+  (retry f (assoc options :max-tries 1)))
