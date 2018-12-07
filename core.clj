@@ -7,7 +7,7 @@
   (:import [java.util Date]))
 
 ; {:status "failure" ; #{"success" "failure"}
-;  :type "send" ; #{"send" "fetch" "process"}
+;  :type "send" ; #{"send" "fetch" "inbox"}
 ;  :activity
 ;   {:type "Create"
 ;    :id "https://example.com/activity"}
