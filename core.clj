@@ -23,15 +23,15 @@
   [{:keys [type activity object remote-addr] :as static-fields}]
   (fn logger
     [{:keys [exception attempt retry-in time]}]
-    (log/info exception
-              (json/write-value-as-string
-                (merge static-fields
-                       {:status (if exception "failure" "success")
-                        :attempt (or attempt 1)
-                        :time time}
-                       (if (and exception retry-in)
-                         {:next-at (Date. ^long (+ (System/currentTimeMillis)
-                                                   retry-in))}))))))
+    (let [message (json/write-value-as-string
+                    (merge static-fields
+                           {:status (if exception "failure" "success")
+                            :attempt (or attempt 1)
+                            :time time}
+                           (if (and exception retry-in)
+                             {:next-at (Date. ^long (+ (System/currentTimeMillis)
+                                                       retry-in))})))]
+      (if exception (log/info exception message) (log/info message)))))
 
 (defn millisec-diff
   [start]
