@@ -11,3 +11,10 @@
                    :read-timeout 2000})
     :body
     parse-json))
+
+(defn deref-object
+  [object find-object]
+  (if (:id object)
+    object
+    (md/let-flow [local-object (find-object object)]
+      (or local-object (fetch-resource object)))))
