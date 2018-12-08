@@ -1,16 +1,15 @@
 (ns bark.fetch
   (:require [manifold.deferred :as md]
-            [aleph.http :as http]
+            [bark.http-client :as http]
             [bark.core :as core]
-            [bark.json :refer [parse-json]]))
+            [bark.json :refer [parse-json]])
+  (:import [java.io FileNotFoundException]))
 
 (defn fetch-resource
   [uri]
   (core/retry
     #(md/chain
-       (http/get uri {:headers {:accept "application/activity+json"}
-                      :connect-timeout 1000
-                      :read-timeout 2000})
+       (http/get uri {:headers {:accept "application/activity+json"}})
        :body
        parse-json)
     {:logger-fn (core/make-logger {:type "fetch"

@@ -1,5 +1,5 @@
 (ns bark.send
-  (:require [aleph.http :as http]
+  (:require [bark.http-client :as http]
             [jsonista.core :as json]
             [csele.headers :refer [sign-request]]
             [csele.hash :refer [hash-base64]]
