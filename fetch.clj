@@ -14,7 +14,11 @@
        :body
        parse-json)
     {:logger-fn (core/make-logger {:type "fetch"
-                                   :remote-addr uri})}))
+                                   :remote-addr uri})
+     :stop-on (fn [ex] (or (contains? #{401 403 404 410}
+                                      (-> ex ex-data :status))
+                           (instance? FileNotFoundException ex)
+                           (instance? FileNotFoundException (:cause ex))))}))
 
 (defn deref-object
   [object find-object]
