@@ -22,7 +22,9 @@
     (.format formatter timestamp)))
 
 (def default-content-type
-   "application/activity+json" );"ld+json; profile=\"https://www.w3.org/ns/activitystreams\"")
+   (str "application/ld+json;"
+        "profile=\"https://www.w3.org/ns/activitystreams\";"
+        "charset=utf-8"))
 
 (def default-context
   {(keyword "@context") ["https://www.w3.org/ns/activitystreams"]})
