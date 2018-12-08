@@ -40,7 +40,7 @@
 (defn retry
   [f {:keys [max-tries initial-offset stop-on? logger-fn]
       :or {max-tries 5
-           initial-offset 5
+           initial-offset 10
            stop-on? (constantly nil)
            logger-fn (constantly nil)}}]
   (md/loop [attempt 1]
