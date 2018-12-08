@@ -31,7 +31,7 @@
         (catch Exception e
           (throw (ex-info "GET request failed."
                           {:status status}
-                          e)))))))
+                          (or (:cause e) e))))))))
 
 (defn post
   [uri {:keys [body] :as options}]
@@ -50,4 +50,4 @@
           (catch Exception e
             (throw (ex-info "POST request failed."
                             {:status status}
-                            e))))))))
+                            (or (:cause e) e)))))))))
