@@ -31,9 +31,11 @@
                   signed? (check-sig {:request request
                                       :find-object find-object})]
       (if (and (not known?) signed?)
-        (md/let-flow [remote-object (fetch/deref-object object find-object)]
-          (get-in handlers [type (:type remote-object)]
-                  (get handlers type (constantly nil))))))))
+        (md/let-flow [remote-object (fetch/deref-object object (constantly nil));find-object)
+                      handler-fn (get-in handlers [type (:type remote-object)]
+                                         (get handlers type (constantly nil)))]
+          (handler-fn (assoc-in request [:parameters :body :object]
+                                        (or remote-object object))))))))
 
 (defn default-logger
   [{{{:keys [id type object]
@@ -52,5 +54,6 @@
   [options]
   (fn [request]
     (core/retry
-      #((activity-handler options) request)
+      #(md/let-flow [handler (activity-handler options)]
+        (handler request))
       (merge {:logger-fn (default-logger request)} options))))
