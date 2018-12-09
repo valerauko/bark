@@ -19,6 +19,18 @@
 ;  :error "stacktrace"
 ;  :attempt 2}
 
+(defn catch-400
+  [ex]
+  (let [;status (-> ex ex-data :status)] ; aleph throws this
+        status (->> ex ; bark.http-client throws this
+                    Throwable->map
+                    :via
+                    (filter #(= (:type %) 'clojure.lang.ExceptionInfo))
+                    first
+                    :data
+                    :status)]
+    (<= 400 (or status 400) 499)))
+
 (defn make-logger
   [{:keys [type activity object remote-addr] :as static-fields}]
   (fn logger
@@ -41,7 +53,7 @@
   [f {:keys [max-tries initial-offset stop-if logger-fn]
       :or {max-tries 5
            initial-offset 10
-           stop-if (constantly nil)
+           stop-if catch-400
            logger-fn (constantly nil)}}]
   (md/loop [attempt 1]
     (let [start (System/nanoTime)]
