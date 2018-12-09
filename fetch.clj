@@ -14,10 +14,11 @@
        parse-json)
     {:logger-fn (core/make-logger {:type "fetch"
                                    :remote-addr uri})
-     :stop-on (fn [ex] (or (contains? #{401 403 404 410}
-                                      (-> ex ex-data :status))
-                           (instance? FileNotFoundException ex)
-                           (instance? FileNotFoundException (:cause ex))))}))
+     :stop-on (fn [ex] (contains? #{401 403 404 410}
+                                  (or (-> ex ex-data :status)
+                                      (->> ex Throwable->map :via
+                                              (filter #(= (:type %) 'clojure.lang.ExceptionInfo))
+                                              first :data :status))))}))
 
 (defn deref-object
   [object find-object]
