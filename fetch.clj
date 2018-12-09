@@ -2,8 +2,7 @@
   (:require [manifold.deferred :as md]
             [bark.http-client :as http]
             [bark.core :as core]
-            [bark.json :refer [parse-json]])
-  (:import [java.io FileNotFoundException]))
+            [bark.json :refer [parse-json]]))
 
 (defn fetch-resource
   [uri]
