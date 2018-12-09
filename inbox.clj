@@ -41,7 +41,7 @@
   [{{{:keys [id type object]
       :as activity} :body} :parameters
     direct-ip :remote-addr
-    {forwarded-ip "X-Forwarded-For"} :headers}]
+    {forwarded-ip :X-Forwarded-For} :headers}]
   (core/make-logger
     {:type "inbox"
      :activity (select-keys activity [:id :type])
