@@ -8,7 +8,8 @@
   [uri]
   (core/retry
     #(md/chain
-       (http/get uri {:headers {:accept "application/activity+json"}})
+       (http/get uri {:headers {:accept "application/activity+json"
+                                :user-agent (str "Bark " "0.1.0")}})
        :body
        parse-json)
     {:logger-fn (core/make-logger {:type "fetch"

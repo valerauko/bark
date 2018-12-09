@@ -48,7 +48,8 @@
         request-headers {"host" (.getHost target-uri)
                          "date" (header-time)
                          "digest" (str "SHA-256=" (hash-base64 body))
-                         "content-type" content-type}
+                         "content-type" content-type
+                         "user-agent" (str "Bark " "0.1.0")}
         signature (sign-request {:uri (.getPath target-uri)
                                  :request-method :post
                                  :headers request-headers
