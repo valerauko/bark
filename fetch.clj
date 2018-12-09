@@ -13,11 +13,16 @@
        parse-json)
     {:logger-fn (core/make-logger {:type "fetch"
                                    :remote-addr uri})
-     :stop-if (fn [ex] (contains? #{401 403 404 410}
-                                  (or (-> ex ex-data :status)
-                                      (->> ex Throwable->map :via
-                                              (filter #(= (:type %) 'clojure.lang.ExceptionInfo))
-                                              first :data :status))))}))
+     :stop-if (fn check-if-abort [ex]
+                (let [;status (-> ex ex-data :status)] ; aleph throws this
+                      status (->> ex ; bark.http-client throws this
+                                  Throwable->map
+                                  :via
+                                  (filter #(= (:type %) 'clojure.lang.ExceptionInfo))
+                                  first
+                                  :data
+                                  :status)]
+                  (<= 400 (or status 400) 499)))}))
 
 (defn deref-object
   [object find-object]
