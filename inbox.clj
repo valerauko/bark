@@ -9,7 +9,7 @@
    Refetches the user's public key if it doesn't work at first try.
    Depending on the user's instance that request can be pretty slow."
   [{{{sig-header :signature} :headers
-     {{actor :actor} :body} :parameters
+     {actor :actor} :body-params
      :as request} :request
     :keys [find-object]}]
   ; first see if the key in the db (if any) can validate the sig
@@ -34,7 +34,7 @@
         (md/let-flow [remote-object (fetch/deref-object object (constantly nil));find-object)
                       handler-fn (get-in handlers [type (:type remote-object)]
                                          (get handlers type (constantly nil)))]
-          (handler-fn (assoc-in request [:parameters :body :object]
+          (handler-fn (assoc-in request [:parameters :body-params :object]
                                         (or remote-object object))))))))
 
 (defn default-logger
