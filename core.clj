@@ -38,10 +38,10 @@
   (/ (- (System/nanoTime) start) 1000000.0))
 
 (defn retry
-  [f {:keys [max-tries initial-offset stop-on logger-fn]
+  [f {:keys [max-tries initial-offset stop-if logger-fn]
       :or {max-tries 5
            initial-offset 10
-           stop-on (constantly nil)
+           stop-if (constantly nil)
            logger-fn (constantly nil)}}]
   (md/loop [attempt 1]
     (let [start (System/nanoTime)]
@@ -55,7 +55,7 @@
           (let [next-attempt (inc attempt)
                 retrying? (<= next-attempt max-tries)
                 time (millisec-diff start)]
-            (if (and retrying? (not (stop-on error)))
+            (if (and retrying? (not (stop-if error)))
               (let [retry-in (->> next-attempt
                                   (+ (rand 0.3)) ; add jitter
                                   (math/expt 2) ; exponential backoff

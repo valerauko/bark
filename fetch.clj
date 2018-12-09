@@ -13,7 +13,7 @@
        parse-json)
     {:logger-fn (core/make-logger {:type "fetch"
                                    :remote-addr uri})
-     :stop-on (fn [ex] (contains? #{401 403 404 410}
+     :stop-if (fn [ex] (contains? #{401 403 404 410}
                                   (or (-> ex ex-data :status)
                                       (->> ex Throwable->map :via
                                               (filter #(= (:type %) 'clojure.lang.ExceptionInfo))
