@@ -17,9 +17,10 @@
     (if (and key (headers/verify request key))
       true
       ; if not then refetch the actor's key and use that to validate
-      (md/let-flow [refetched-actor (fetch/fetch-resource actor)
-                    refetched-key (:public-key refetched-actor)]
-        (and refetched-key (headers/verify request refetched-key))))))
+      (md/let-flow [refetched-actor (fetch/fetch-resource actor)]
+        (let [refetched-key (-> refetched-actor :publicKey :publicKeyPem)]
+          (and refetched-key
+               (headers/verify request refetched-key)))))))
 
 (defn activity-handler
   [{:keys [find-object handlers]
